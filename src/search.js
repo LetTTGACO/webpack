@@ -7,7 +7,7 @@ import Googlelogo from './images/Googlelogo.jpg'
 class Search extends React.Component {
     render() {
         return <div className="search-text">
-            React-JSX-Search-Watch222
+            React-JSX-Search-Watch222-热更新
             <img src={ logo } />
             <img src={ Googlelogo } />
         </div>
