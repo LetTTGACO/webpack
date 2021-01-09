@@ -2,8 +2,8 @@
 import React from 'react'
 import ReactDOM from 'react-dom'
 import './search.less'
-import logo from './images/logo.jpg'
-import Googlelogo from './images/Googlelogo.jpg'
+import logo from '../images/logo.jpg'
+import Googlelogo from '../images/Googlelogo.jpg'
 class Search extends React.Component {
     render() {
         return <div className="search-text">

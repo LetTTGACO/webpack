@@ -1,5 +1,5 @@
 {
-  "name": "mycode",
+  "name": "webpack",
   "version": "1.0.0",
   "description": "",
   "main": "index.js",
@@ -23,6 +23,7 @@
     "css-minimizer-webpack-plugin": "^1.2.0",
     "cssnano": "^4.1.10",
     "file-loader": "^6.2.0",
+    "glob": "^7.1.6",
     "html-webpack-plugin": "^4.5.1",
     "less": "^4.0.0",
     "less-loader": "^7.2.1",

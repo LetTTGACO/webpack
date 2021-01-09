@@ -1,14 +1,56 @@
 'use strict';
 const path = require('path');
+const glob = require('glob');
 const MiniCssExtractPlugin = require('mini-css-extract-plugin')
 const HtmlWebpackPlugin = require('html-webpack-plugin');
 const CssMinimizerPlugin = require('css-minimizer-webpack-plugin');
 const { CleanWebpackPlugin } = require('clean-webpack-plugin');
+
+const setMPA = () => {
+    const entry = {}
+    const htmlWebpackPlugins = []
+
+    const entryFiles = glob.sync(path.join(__dirname, './src/*/index.js'))
+    // entryFile [
+    //     '/Users/fangpengfei/workSpace/webpack/src/index/index.js',
+    //     '/Users/fangpengfei/workSpace/webpack/src/search/index.js'
+    //   ]
+    // console.log('entryFiles', entryFiles)
+    Object.keys(entryFiles).map(index => {
+        const entryFile = entryFiles[index]
+        console.log('entryFile', entryFile)
+        const match = entryFile.match(/src\/(.*)\/index\.js/)
+        const pageName = match[1]
+        entry[pageName] = entryFile
+        // console.log('pageName', pageName)
+        htmlWebpackPlugins.push(
+            new HtmlWebpackPlugin({
+                template: path.join(__dirname, `src/${pageName}/${pageName}.html`),
+                filename: `${pageName}_[contenthash:8].html`,
+                chunks: [pageName],
+                inject: true,
+                minify: {
+                    html5: true,
+                    collapseWhitespace: true,
+                    preserveLineBreaks: false,
+                    minifyCSS: true,
+                    minifyJS: true,
+                    removeComments: false
+                }
+            })
+        )
+    })
+    return {
+        entry,
+        htmlWebpackPlugins,
+    }
+}
+const { entry, htmlWebpackPlugins } = setMPA()
+console.log('entry', entry)
+console.log('htmlWebpackPlugins', htmlWebpackPlugins)
+
 module.exports = {
-    entry: {
-        index: './src/index.js',
-        search: './src/search.js',
-    },
+    entry,
     output: {
         path: path.join(__dirname, 'dist'),
         filename: '[name]_[chunkhash:8].js',
@@ -18,32 +60,7 @@ module.exports = {
         new MiniCssExtractPlugin({
             filename: '[name]_[contenthash:8].css'
         }),
-        new HtmlWebpackPlugin({
-            template: path.join(__dirname, 'src/search.html'),
-            filename: 'search_[contenthash:8].html', chunks: ['search'],
-            inject: true,
-            minify: {
-                html5: true,
-                collapseWhitespace: true,
-                preserveLineBreaks: false,
-                minifyCSS: true,
-                minifyJS: true,
-                removeComments: false
-            }
-        }),
-        new HtmlWebpackPlugin({
-            template: path.join(__dirname, 'src/index.html'),
-            filename: 'index_[contenthash:8].html', chunks: ['index'],
-            inject: true,
-            minify: {
-                html5: true,
-                collapseWhitespace: true,
-                preserveLineBreaks: false,
-                minifyCSS: true,
-                minifyJS: true,
-                removeComments: false
-            }
-        }),
+        ...htmlWebpackPlugins,
         new CleanWebpackPlugin(),
     ],
     optimization: {
