@@ -3,6 +3,7 @@ const path = require('path');
 const MiniCssExtractPlugin = require('mini-css-extract-plugin')
 const HtmlWebpackPlugin = require('html-webpack-plugin');
 const CssMinimizerPlugin = require('css-minimizer-webpack-plugin');
+const { CleanWebpackPlugin } = require('clean-webpack-plugin');
 module.exports = {
     entry: {
         index: './src/index.js',
@@ -19,7 +20,7 @@ module.exports = {
         }),
         new HtmlWebpackPlugin({
             template: path.join(__dirname, 'src/search.html'),
-            filename: 'search.html', chunks: ['search'],
+            filename: 'search_[contenthash:8].html', chunks: ['search'],
             inject: true,
             minify: {
                 html5: true,
@@ -32,7 +33,7 @@ module.exports = {
         }),
         new HtmlWebpackPlugin({
             template: path.join(__dirname, 'src/index.html'),
-            filename: 'index.html', chunks: ['index'],
+            filename: 'index_[contenthash:8].html', chunks: ['index'],
             inject: true,
             minify: {
                 html5: true,
@@ -42,7 +43,8 @@ module.exports = {
                 minifyJS: true,
                 removeComments: false
             }
-        })
+        }),
+        new CleanWebpackPlugin(),
     ],
     optimization: {
         minimizer: [
@@ -67,7 +69,10 @@ module.exports = {
                 use: [
                     MiniCssExtractPlugin.loader,
                     'css-loader',
-                    'less-loader'
+                    {
+                        loader: 'postcss-loader',
+                    },
+                    'less-loader',
                 ]
             },
             {
